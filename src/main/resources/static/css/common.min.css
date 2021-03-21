@@ -1,0 +1,107 @@
+.self {
+    background: rgba(255, 255, 255, .2);
+    border: 1px solid rgba(255, 255, 255, .3);
+    -moz-box-shadow: 0 3px 0 rgba(12, 12, 12, .03);
+    -webkit-box-shadow: 0 3px 0 rgba(12, 12, 12, .03);
+    box-shadow: 0 3px 0 rgba(12, 12, 12, .03);
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    padding: 30px
+}
+/*提示插件定位*/
+.toast-middle-right {
+    top: 430px;
+    right: 305px
+}
+
+.toast-middle2-right {
+    top: 510px;
+    right: 305px
+}
+
+.toast-middle-question0 {
+    top: 170px;
+    right: 180px
+}
+.toast-middle-question1 {
+    top: 250px;
+    right: 180px
+}
+.toast-middle-question2 {
+    top: 170px;
+    right: 180px
+}
+/*解决页面有空余的问题*/
+#content-main2 {
+    height: calc(100% - 90px);
+    /*overflow: hidden*/
+    overflow: visible;
+}
+@media only screen and (-webkit-min-device-pixel-ratio: 2) {
+    #content-main2 {
+        -webkit-overflow-scrolling: touch;
+    }
+}
+/*解决教师评价页面单元超出问题*/
+.ibox2 {
+    clear: both;
+    margin-bottom: 0px;
+    margin-top: 0px;
+    padding: 0;
+}
+
+.contact-box2 {
+    background-color: #fff;
+    border: 1px solid #e7eaec;
+    padding: 20px 20px 0px 20px;
+    margin-bottom: 20px;
+}
+.contact-box2 a{
+    color: inherit;
+}
+/*排名页面css*/
+.slider_common {
+    width: 250px;
+    margin: 20px auto;
+}
+.c-1-color { background: #9fe6b8 !important; }
+.c-2-color { background: #67e0e3 !important; }
+.c-3-color { background: #32c5e9 !important;}
+.c-4-color { background: #37a2da !important;}
+/*.c-5-color { background: #96BFFF !important;}*/
+/*.c-6-color { background: #9d96f5 !important;}*/
+/*.c-7-color { background: #8378EA !important;}*/
+
+.c-5-color { background: #FFDB5C !important;}
+.c-6-color { background: #ff9f7f !important;}
+.c-7-color { background: #E690D1 !important;}
+/*设置松开滑块不提示*/
+.noUi-tooltip {
+    display: none !important;
+}
+.noUi-active .noUi-tooltip {
+    display: block !important;
+}
+/*留言样式设计*/
+.msg-element {
+    padding-bottom: 0px !important;
+}
+.msg-content {
+    margin: 10px 0 1px;
+    font-size: 13px;
+}
+/*用户信息页面样式*/
+.tab-pane-hight{
+    height: 388px !important;
+}
+
+tfoot input {
+    width: 100%;
+    padding: 3px;
+    box-sizing: border-box;
+}
+
+.tdClass{
+    text-align:center
+}
