@@ -1,9 +1,7 @@
 package com.ma.car.service;
 
 import com.ma.car.model.Permission;
-import com.ma.car.model.URLResource;
 import com.ma.car.repository.PermissionRepository;
-import com.ma.car.repository.ResourceRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,8 +19,6 @@ public class PermissionService {
     @Resource
     private PermissionRepository permissionRepository;
 
-    @Resource
-    private ResourceRepository resourceRepository;
 
     //根据id查询
     public Permission findById(Long id) {
@@ -64,21 +60,6 @@ public class PermissionService {
             p.setName(pp.getName());
             p.setDescription(pp.getDescription());
 
-            //给权限新增资源
-            if(pp.getResourceIds()!=null&&pp.getResourceIds().length()!=0){
-                String[] split = pp.getResourceIds().split(",");
-                //获取所有资源id，通过资源id从表里查，要是有该资源则新增，没有则返回错误信息
-                for (int i = 0; i < split.length; i++) {
-                    Long resourceId = Long.parseLong(split[i]);
-                    Optional<URLResource> r = resourceRepository.findById(resourceId);
-                    if(r.isPresent()){
-                        //添加资源
-                        p.getResources().add(r.get());
-                    }else {
-                        return 2;
-                    }
-                }
-            }
             permissionRepository.save(p);
             return 0;
         }
@@ -90,40 +71,18 @@ public class PermissionService {
      * @param id 权限id
      * @param name 权限名称
      * @param description 权限描述
-     * @param resourceIds 资源id字符串，多个资源id用逗号隔开
      * @return
      */
-    public int editPermData(Long id,String name, String description,String resourceIds) {
+    public int editPermData(Long id,String name, String description) {
         //编辑
         Optional<Permission> p = permissionRepository.findById(id);
         if (p.isPresent()) {
             Permission permission = p.get();
             permission.setName(name);
             permission.setDescription(description);
-            //给权限新增或删除目录
-            if(resourceIds!=null&&resourceIds.length()!=0){
-                String[] split = resourceIds.split(",");
-                //清空之前绑定的目录值
-                permission.getResources().clear();
-                Set<URLResource> set = new HashSet<>();
-                //获取所有目录id，通过目录id从表里查，要是有该目录则新增，没有则返回错误信息
-                for (String s : split) {
-                    Long resourceId = Long.parseLong(s);
-                    Optional<URLResource> r = resourceRepository.findById(resourceId);
-                    if (r.isPresent()) {
-                        //添加目录
-                        set.add(r.get());
-                    } else {
-                        return 3;
-                    }
-                }
-                permission.setResources(set);
-            }else{
-                p.get().getResources().clear();
-            }
             permissionRepository.save(permission);
         }else{
-            return 2;
+            return 1;
         }
         return 0;
     }

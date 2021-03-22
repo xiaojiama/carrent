@@ -1,6 +1,8 @@
 package com.ma.car.service;
 
+import com.ma.car.model.Role;
 import com.ma.car.model.User;
+import com.ma.car.repository.RoleRepository;
 import com.ma.car.repository.UserRepository;
 import org.apache.shiro.crypto.SecureRandomNumberGenerator;
 import org.apache.shiro.crypto.hash.SimpleHash;
@@ -17,15 +19,20 @@ import java.util.List;
 
 
 /*
-* @Author ma
-* @date 2021/03
-*/
+ * @Author Ma
+ * @date 2020/06
+ */
 
 @Service
 public class UserService {
 
     @Resource
     private UserRepository userRepository;
+    @Resource
+    private RoleService roleService;
+
+    @Resource
+    private RoleRepository roleRepository;
 
 
     //  判断存在
@@ -33,16 +40,20 @@ public class UserService {
         User user = userRepository.findByUserName(username);
         return null != user;
     }
-//  获取用户
+    //  获取用户
     public User findByUserName(String username) {
         return userRepository.findByUserName(username);
     }
 
+    //  获取用户
+    public User getUser(String username, String password){
+        return userRepository.findByUserNameOrPassWord(username, password);
+    }
 
-/*
- *   注册用户
- *   通过生成随机salt并对password+salt字符串使用hash加密存储保证安全性
- */
+    /*
+     *   注册用户
+     *   通过生成随机salt并对password+salt字符串使用hash加密存储保证安全性
+     */
     public int register(User user){
         String userName = user.getUserName();
         String passWord = user.getPassWord();
@@ -76,6 +87,8 @@ public class UserService {
         String encodedPassword = new SimpleHash("md5",passWord,salt,times).toString();
         //      存储用户信息
         user.setPassWord(encodedPassword);
+        user.setSalt(salt);
+       // user.setEnabled(true);
         Date date = new Date();
         user.setCreateTime(date);
         userRepository.save(user);
@@ -87,29 +100,21 @@ public class UserService {
         return 1;
     }
 
-   /* //  编辑用户
+    //  编辑用户
     public void updateUser(User user){
-        User userInDb = userRepository.findByUsername(user.getUsername());
+        User userInDb = userRepository.findByUserName(user.getUserName());
         userInDb.setName(user.getName());
         userInDb.setPhone(user.getPhone());
         userInDb.setEmail(user.getEmail());
-        userInDb.setAddress(user.getAddress());
-        userInDb.setDepartment(user.getDepartment());
-        userInDb.setCompany(user.getCompany());
-        userInDb.setSex(user.getSex());
         userRepository.save(userInDb);
 
-    //      改变角色
-        userRoleService.saveRoleChanges(userInDb.getId(), user.getRole().getId());
+        //      改变角色
+        //userRoleService.saveRoleChanges(userInDb.getId(), user.getRole().getId());
     }
     //    修改个人信息界面用户信息
     public void updateUserInfo(User user){
         User userInDb = userRepository.findByName(user.getName());
-        userInDb.setCompany(user.getCompany());
-        userInDb.setDepartment(user.getDepartment());
-        userInDb.setAddress(user.getAddress());
         userInDb.setEmail(user.getEmail());
-        userInDb.setSex(user.getSex());
         userRepository.save(userInDb);
     }
     //    删除用户
@@ -123,57 +128,46 @@ public class UserService {
         Sort sort = "ascending".equals(sortType) ? Sort.by("id").ascending() : Sort.by("id").descending();
         Pageable pageable = PageRequest.of(page-1,limit, sort);
         Page<User> users = userRepository.findAll(pageable);
-        Role role;
+       /* Role role;
         for (User user: users){
             role = roleService.listRoleByUser(user.getUsername());
             user.setRole(role);
-        }
+        }*/
         return users;
     }
 
     //    更新用户状态
     public void updateUserStatus(User user) {
-        User userInDB = userRepository.findByUsername(user.getUsername());
-        userInDB.setEnabled(user.isEnabled());
+        User userInDB = userRepository.findByUserName(user.getUserName());
+        //userInDB.setEnabled(user.isEnabled());
         userRepository.save(userInDB);
     }
     //    重制密码
     public void resetPassword(User user) {
-        User userInDB = userRepository.findByUsername(user.getUsername());
+        User userInDB = userRepository.findByUserName(user.getUserName());
         String salt = new SecureRandomNumberGenerator().nextBytes().toString();
         int times = 2;
         userInDB.setSalt(salt);
         String encodedPassword = new SimpleHash("md5", "123", salt, times).toString();
-        userInDB.setPassword(encodedPassword);
+        userInDB.setPassWord(encodedPassword);
         userRepository.save(userInDB);
     }
     //     搜索用户
     public List<User> searchUser(String keyword) {
         List<User> searchedUsers = userRepository.findAllByNameLikeOrPhoneLike('%'+keyword+'%',
                 '%'+ keyword + '%');
-        Role role;
+       /* Role role;
         for (User user: searchedUsers) {
             role = roleService.listRoleByUser(user.getUsername());
             user.setRole(role);
-        }
+        }*/
         return searchedUsers;
-    }
-    //    搜索某个性别用户
-    public Page<User> listUserBySex(int page, int limit, String sex){
-        Pageable pageable = PageRequest.of(page-1,limit, Sort.by("id").descending());
-        Page<User> users = userRepository.findAllBySex(pageable, sex);
-        Role role;
-        for (User user: users){
-            role = roleService.listRoleByUser(user.getUsername());
-            user.setRole(role);
-        }
-        return users;
     }
 
     //    查询某个姓名的用户
     public User getUserInfo(String name){
         return userRepository.findByName(name);
-    }*/
+    }
 
 
 }

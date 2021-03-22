@@ -61,8 +61,6 @@ public class PPController {
                     return ResultFactory.buildResult(20000, "增加权限信息成功",permissionService.list());
                 case 1:
                     return ResultFactory.buildResult(40000,"权限名已存在",permissionService.list());
-                case 2:
-                    return ResultFactory.buildResult(40000,"该目录不存在",permissionService.list());
                 default:
                     return ResultFactory.buildResult(40000,"未知错误",permissionService.list());
             }
@@ -76,11 +74,11 @@ public class PPController {
             String defaultMessage = bindingResult.getFieldError().getDefaultMessage();
             return ResultFactory.buildResult(40000, defaultMessage, permissionService.list());
         }else{
-            int status = permissionService.editPermData(p.getId(),p.getName(),p.getDescription(),p.getResourceIds());
+            int status = permissionService.editPermData(p.getId(),p.getName(),p.getDescription());
             switch (status) {
                 case 0:
                     return ResultFactory.buildResult(20000, "修改权限成功", permissionService.list());
-                case 2:
+                case 1:
                     return ResultFactory.buildResult(40000,"该权限不存在",permissionService.list());
                 default:
                     return ResultFactory.buildResult(40000,"未知错误",permissionService.list());

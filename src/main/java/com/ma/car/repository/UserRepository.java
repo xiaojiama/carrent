@@ -36,4 +36,9 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
      Page<User> findAll(Pageable pageable);
 
+    User findByUserNameOrPassWord(String username, String password);
+
+    User findByName(String name);
+
+    List<User> findAllByNameLikeOrPhoneLike(String s, String s1);
 }

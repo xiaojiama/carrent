@@ -28,17 +28,6 @@ public class Permission implements Serializable {
     //权限描述
     private String description;
 
-    //权限-资源多对多关系
-    @ManyToMany
-    @JoinTable(name = "permission_resource_relation",joinColumns = {@JoinColumn(name="permission_id")},
-            inverseJoinColumns = {@JoinColumn(name = "resource_id")},
-            uniqueConstraints = {@UniqueConstraint(columnNames = {"permission_id", "resource_id"})}
-    )
-    private Set<URLResource> resources = new HashSet<>();
-
-    //存放多个资源id的字符串
-    @Transient
-    private String resourceIds;
 
     //权限-角色多对多关系
     @JsonIgnore
@@ -78,31 +67,13 @@ public class Permission implements Serializable {
         this.permRoles = permRoles;
     }
 
-    public Set<URLResource> getResources() {
-        return resources;
-    }
-
-    public void setResources(Set<URLResource> resources) {
-        this.resources = resources;
-    }
-
-    public String getResourceIds() {
-        return resourceIds;
-    }
-
-    public void setResourceIds(String resourceIds) {
-        this.resourceIds = resourceIds;
-    }
-
     public Permission() {
 
     }
 
-    public Permission(@NotEmpty(message = "权限名不为空") String name, String description, Set<URLResource> resources, String resourceIds, Set<Role> permRoles) {
+    public Permission(@NotEmpty(message = "权限名不为空") String name, String description,  Set<Role> permRoles) {
         this.name = name;
         this.description = description;
-        this.resources = resources;
-        this.resourceIds = resourceIds;
         this.permRoles = permRoles;
     }
 

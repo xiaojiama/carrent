@@ -5,9 +5,12 @@ import com.ma.car.service.UserService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
+import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.Subject;
+import org.apache.shiro.util.ByteSource;
+import org.springframework.util.ObjectUtils;
 
 import javax.annotation.Resource;
 
@@ -20,21 +23,29 @@ public class UserRealm extends AuthorizingRealm {
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
         System.out.println("执行了授权AuthorizationInfo");
-        return null;
+        User primaryPrincipal = (User)principalCollection.getPrimaryPrincipal();
+
+        //根据身份信息，获取当前用户的角色信息或权限信息
+        SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
+        //将数据库查询的角色和权限 赋值给权限对象
+        //simpleAuthorizationInfo.addRoles();
+        //simpleAuthorizationInfo.addStringPermissions();
+
+        return simpleAuthorizationInfo;
     }
     //认证
+    // 获取认证信息，即根据 token 中的用户名从数据库中获取密码、盐等并返回
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
         System.out.println("执行了认证AuthenticationInfo");
-        UsernamePasswordToken userToken = (UsernamePasswordToken) token;
-        //通过传来的用户名从数据库查数据
-        User user = userService.findByUserName(userToken.getUsername());
-        //没有查出该用户
-        if(user==null){
-            return null; //抛出异常 UnknownAccountException
+        String userName = token.getPrincipal().toString();
+        User user = userService.findByUserName(userName);
+        if (ObjectUtils.isEmpty(user)){
+            System.out.println("不存在");
+            throw new UnknownAccountException();
         }
-
-        //密码认证
-        return new SimpleAuthenticationInfo(user,userToken.getPassword(),getName());
+        String passwordInDB = user.getPassWord();
+        String salt = user.getSalt();
+        return new SimpleAuthenticationInfo(userName, passwordInDB, ByteSource.Util.bytes(salt), getName());
     }
 }

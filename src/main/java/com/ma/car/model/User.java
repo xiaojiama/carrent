@@ -32,6 +32,8 @@ public class User implements Serializable {
     // 密码
     @NotBlank(message="密码不能为空")
     private String passWord;
+    // 密码加密salt
+    private String salt;
     // 姓名
     private String name;
     // Email
@@ -84,6 +86,14 @@ public class User implements Serializable {
 
     public void setPassWord(String passWord) {
         this.passWord = passWord;
+    }
+
+    public String getSalt() {
+        return salt;
+    }
+
+    public void setSalt(String salt) {
+        this.salt = salt;
     }
 
     public String getName() {
@@ -153,9 +163,11 @@ public class User implements Serializable {
     public User() {
     }
 
-    public User(@NotBlank(message = "用户名不能为空") String userName, @NotBlank(message = "密码不能为空") String passWord, String name, @Email(message = "邮箱格式不对") String email, String phone, String imgUrl, Date createTime, String token, String roleIds, Set<Role> userRoles) {
+    public User(int id, @NotBlank(message = "用户名不能为空") String userName, @NotBlank(message = "密码不能为空") String passWord, String salt, String name, @Email(message = "邮箱格式不对") String email, String phone, String imgUrl, Date createTime, String token, String roleIds, Set<Role> userRoles) {
+        this.id = id;
         this.userName = userName;
         this.passWord = passWord;
+        this.salt = salt;
         this.name = name;
         this.email = email;
         this.phone = phone;
@@ -172,12 +184,14 @@ public class User implements Serializable {
                 "id=" + id +
                 ", userName='" + userName + '\'' +
                 ", passWord='" + passWord + '\'' +
+                ", salt='" + salt + '\'' +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 ", phone='" + phone + '\'' +
                 ", imgUrl='" + imgUrl + '\'' +
                 ", createTime=" + createTime +
                 ", token='" + token + '\'' +
+                ", roleIds='" + roleIds + '\'' +
                 ", userRoles=" + userRoles +
                 '}';
     }
