@@ -27,7 +27,7 @@ public class UserController {
 //    private MenuService menuService;
     //  显示用户列表
     @GetMapping("/api/admin/user")
-    public Result listUsers(@RequestParam(defaultValue="0", required = false) int page,
+    public Result listUsers(@RequestParam(defaultValue="1", required = false) int page,
                             @RequestParam(defaultValue = "20", required = false) int limit,
                             @RequestParam(defaultValue = "descending", required = false) String sort){
         return ResultFactory.buildSuccessResult(userService.list(page, limit, sort));

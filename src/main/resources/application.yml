@@ -4,19 +4,23 @@ server:
     context-path: /carrent
 
 spring:
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password:
     url: jdbc:mysql://localhost:3306/car?useUnicode=true&characterEncoding=utf-8&useSSL=false
-  #JPAÉèÖÃ
+  #JPAï¿½ï¿½ï¿½ï¿½
   jpa:
     properties:
       hibernate:
         hbm2ddl:
           auto: update
         dialect: org.hibernate.dialect.MySQL5InnoDBDialect
-  #¹Ø±Õ»º´æ·½±ãµ÷ÊÔ
+  #ï¿½Ø±Õ»ï¿½ï¿½æ·½ï¿½ï¿½ï¿½ï¿½ï¿½
   thymeleaf:
     cache: false
     suffix: .html
