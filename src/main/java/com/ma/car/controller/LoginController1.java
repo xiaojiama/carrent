@@ -23,7 +23,7 @@ public class LoginController1 {
         Subject subject = SecurityUtils.getSubject();
 
         //封装用户的登录数据 token:令牌
-        UsernamePasswordToken token = new UsernamePasswordToken(user.getUserName(), user.getPassWord());
+        UsernamePasswordToken token = new UsernamePasswordToken(user.getUsername(), user.getPassword());
         //token.setRememberMe(true);
 
         try {

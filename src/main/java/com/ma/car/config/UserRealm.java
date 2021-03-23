@@ -1,6 +1,7 @@
 package com.ma.car.config;
 
 import com.ma.car.model.User;
+import com.ma.car.result.JWTUtils;
 import com.ma.car.service.UserService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
@@ -13,6 +14,8 @@ import org.apache.shiro.util.ByteSource;
 import org.springframework.util.ObjectUtils;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
+import java.util.Map;
 
 //自定义的UserRealm
 public class UserRealm extends AuthorizingRealm {
@@ -39,13 +42,18 @@ public class UserRealm extends AuthorizingRealm {
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
         System.out.println("执行了认证AuthenticationInfo");
         String userName = token.getPrincipal().toString();
-        User user = userService.findByUserName(userName);
+        User user = userService.findByUsername(userName);
         if (ObjectUtils.isEmpty(user)){
             System.out.println("不存在");
             throw new UnknownAccountException();
         }
-        String passwordInDB = user.getPassWord();
+        String passwordInDB = user.getPassword();
         String salt = user.getSalt();
-        return new SimpleAuthenticationInfo(userName, passwordInDB, ByteSource.Util.bytes(salt), getName());
+        Map<String,String> payload = new HashMap<>();
+        payload.put("id",String.valueOf(user.getId()));
+        payload.put("userName",user.getUsername());
+        //生成JWT的令牌
+        String userToken = JWTUtils.getToken(payload);
+        return new SimpleAuthenticationInfo(userToken, passwordInDB, ByteSource.Util.bytes(salt), getName());
     }
 }

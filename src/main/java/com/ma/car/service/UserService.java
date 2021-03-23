@@ -37,17 +37,17 @@ public class UserService {
 
     //  判断存在
     public boolean isExist(String username){
-        User user = userRepository.findByUserName(username);
+        User user = userRepository.findByUsername(username);
         return null != user;
     }
     //  获取用户
-    public User findByUserName(String username) {
-        return userRepository.findByUserName(username);
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username);
     }
 
     //  获取用户
     public User getUser(String username, String password){
-        return userRepository.findByUserNameOrPassWord(username, password);
+        return userRepository.findByUsernameOrPassword(username, password);
     }
 
     /*
@@ -55,21 +55,21 @@ public class UserService {
      *   通过生成随机salt并对password+salt字符串使用hash加密存储保证安全性
      */
     public int register(User user){
-        String userName = user.getUserName();
-        String passWord = user.getPassWord();
+        String userName = user.getUsername();
+        String passWord = user.getPassword();
         //      防止注入
         String name = user.getName();
         String phone = user.getPhone();
         String email = user.getEmail();
 
         userName = HtmlUtils.htmlEscape(userName);
-        user.setUserName(userName);
-        name = HtmlUtils.htmlEscape(name);
+        user.setUsername(userName);
+       /* name = HtmlUtils.htmlEscape(name);
         user.setName(name);
         phone = HtmlUtils.htmlEscape(phone);
         user.setPhone(phone);
         email = HtmlUtils.htmlEscape(email);
-        user.setEmail(email);
+        user.setEmail(email);*/
 
         //      返回错误代码
         if (userName.equals("") || passWord.equals("")){
@@ -86,7 +86,7 @@ public class UserService {
         //      hash密码
         String encodedPassword = new SimpleHash("md5",passWord,salt,times).toString();
         //      存储用户信息
-        user.setPassWord(encodedPassword);
+        user.setPassword(encodedPassword);
         user.setSalt(salt);
        // user.setEnabled(true);
         Date date = new Date();
@@ -102,7 +102,7 @@ public class UserService {
 
     //  编辑用户
     public void updateUser(User user){
-        User userInDb = userRepository.findByUserName(user.getUserName());
+        User userInDb = userRepository.findByUsername(user.getUsername());
         userInDb.setName(user.getName());
         userInDb.setPhone(user.getPhone());
         userInDb.setEmail(user.getEmail());
@@ -138,18 +138,18 @@ public class UserService {
 
     //    更新用户状态
     public void updateUserStatus(User user) {
-        User userInDB = userRepository.findByUserName(user.getUserName());
+        User userInDB = userRepository.findByUsername(user.getUsername());
         //userInDB.setEnabled(user.isEnabled());
         userRepository.save(userInDB);
     }
     //    重制密码
     public void resetPassword(User user) {
-        User userInDB = userRepository.findByUserName(user.getUserName());
+        User userInDB = userRepository.findByUsername(user.getUsername());
         String salt = new SecureRandomNumberGenerator().nextBytes().toString();
         int times = 2;
         userInDB.setSalt(salt);
         String encodedPassword = new SimpleHash("md5", "123", salt, times).toString();
-        userInDB.setPassWord(encodedPassword);
+        userInDB.setPassword(encodedPassword);
         userRepository.save(userInDB);
     }
     //     搜索用户

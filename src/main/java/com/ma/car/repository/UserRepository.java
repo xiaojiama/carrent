@@ -23,7 +23,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
      * @param userName 用户名
      * @return 用户
      */
-     User findByUserName(String userName);
+     User findByUsername(String userName);
     /**
      * 根据用户id删除用户
      *
@@ -36,7 +36,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
      Page<User> findAll(Pageable pageable);
 
-    User findByUserNameOrPassWord(String username, String password);
+    User findByUsernameOrPassword(String username, String password);
 
     User findByName(String name);
 

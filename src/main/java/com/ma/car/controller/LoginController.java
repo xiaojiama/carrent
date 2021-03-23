@@ -39,8 +39,10 @@ public class LoginController {
     private UserRepository userRepository;
     @Resource
     private RoleService roleService;
+   /* @Resource
+    private UserInfoRepository userInfoRepository;*/
 
-//  注册
+    //  注册
     @PostMapping("/api/register")
     public Result register(@RequestBody User user) {
         System.out.println("register User :");
@@ -57,33 +59,24 @@ public class LoginController {
         return ResultFactory.buildFailResult("未知错误");
     }
 
-//  登录控制
+    //  登录控制
     @PostMapping("api/login")
     public Result login(@RequestBody User requestUser, HttpServletResponse response){
-        String username = requestUser.getUserName();
+        String username = requestUser.getUsername();
         System.out.println(username);
         System.out.println(requestUser);
-    //        subject->任何与系统交互的东西
+        //        subject->任何与系统交互的东西
         Subject subject = SecurityUtils.getSubject();
         UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken(
-                username, requestUser.getPassWord());
+                username, requestUser.getPassword());
         System.out.println(usernamePasswordToken);
         //usernamePasswordToken.setRememberMe(true);
         try{
             subject.login(usernamePasswordToken);
-            User loginUser = userRepository.findByUserName(username);
-            //Role loginUserRole = roleService.listRoleByUser(username);
-            //loginUser.setRole(loginUserRole);
-            Map<String,String> payload = new HashMap<>();
-            payload.put("id",String.valueOf(loginUser.getId()));
-            payload.put("userName",loginUser.getUserName());
-            //生成JWT的令牌
-            String token = JWTUtils.getToken(payload);
-            //String token = username.toLowerCase() + "-token";
-            loginUser.setToken(token);
-            Cookie cookie = new Cookie("access_token", token);
+            User loginUser = userRepository.findByUsername(username);
+            /*Role loginUserRole = roleService.listRoleByUser(username);
+            loginUser.setRole(loginUserRole);*/
 
-            response.addCookie(cookie);
             return ResultFactory.buildSuccessResult(loginUser);
         }catch (IncorrectCredentialsException e) {
             return ResultFactory.buildFailResult("密码错误");
@@ -91,8 +84,8 @@ public class LoginController {
             return ResultFactory.buildFailResult("账号不存在");
         }
     }
-    //  获取用户信息
-   /* @GetMapping("/api/info")
+    /*//  获取用户信息
+    @GetMapping("/api/info")
     public Result getInfo(String token) {
         String username = token.replace("-token", "");
         UserInfoOnly user = userInfoRepository.findByUsername(username);

@@ -28,10 +28,10 @@ public class User implements Serializable {
     // 用户名
     @NotBlank(message="用户名不能为空")
     @Column(nullable = false,unique = true)
-    private String userName;
+    private String username;
     // 密码
     @NotBlank(message="密码不能为空")
-    private String passWord;
+    private String password;
     // 密码加密salt
     private String salt;
     // 姓名
@@ -72,20 +72,20 @@ public class User implements Serializable {
         this.id = id;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public String getPassWord() {
-        return passWord;
+    public String getPassword() {
+        return password;
     }
 
-    public void setPassWord(String passWord) {
-        this.passWord = passWord;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getSalt() {
@@ -163,10 +163,9 @@ public class User implements Serializable {
     public User() {
     }
 
-    public User(int id, @NotBlank(message = "用户名不能为空") String userName, @NotBlank(message = "密码不能为空") String passWord, String salt, String name, @Email(message = "邮箱格式不对") String email, String phone, String imgUrl, Date createTime, String token, String roleIds, Set<Role> userRoles) {
-        this.id = id;
-        this.userName = userName;
-        this.passWord = passWord;
+    public User(@NotBlank(message = "用户名不能为空") String username, @NotBlank(message = "密码不能为空") String password, String salt, String name, @Email(message = "邮箱格式不对") String email, String phone, String imgUrl, Date createTime, String token, String roleIds, Set<Role> userRoles) {
+        this.username = username;
+        this.password = password;
         this.salt = salt;
         this.name = name;
         this.email = email;
@@ -182,8 +181,8 @@ public class User implements Serializable {
     public String toString() {
         return "User{" +
                 "id=" + id +
-                ", userName='" + userName + '\'' +
-                ", passWord='" + passWord + '\'' +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
                 ", salt='" + salt + '\'' +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +

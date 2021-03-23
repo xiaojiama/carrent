@@ -4,9 +4,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
-    <title>教师评价系统</title>
-    <meta name="keywords" content="教师评价系统">
-    <meta name="description" content="教师评价系统">
+    <title>汽车租赁系统</title>
+    <meta name="keywords" content="汽车租赁系统">
+    <meta name="description" content="汽车租赁系统">
     <link rel="shortcut icon" href="favicon.ico">
     <link href="css/bootstrap.min14ed.css?v=3.3.6" rel="stylesheet">
     <link href="css/font-awesome.min93e3.css?v=4.4.0" rel="stylesheet">
@@ -32,10 +32,10 @@
         <div class="col-sm-7">
             <div class="signin-info">
                 <div class="logopanel m-b">
-                    <h1>[ 高校教师教学评价 ]</h1>
+                    <h1>[ 汽车租赁系统 ]</h1>
                 </div>
                 <div class="m-b"></div>
-                <h4>欢迎使用 <strong>教师评价系统</strong></h4>
+                <h4>欢迎使用 <strong>汽车租赁系统</strong></h4>
                 <ul class="m-b">
                     <li><i class="fa fa-arrow-circle-o-right m-r-xs"></i> 学生评价</li>
                     <li><i class="fa fa-arrow-circle-o-right m-r-xs"></i> 教师自评</li>
@@ -50,27 +50,15 @@
         <div class="col-sm-5">
             <div class="self">
                 <h4 class="no-margins" id="rgTitle">登录</h4>
-                <p class="m-t-md" id="rgMsg">登录到教师管理系统</p>
-                <div class="radio radio-info radio-inline" id="radio_div_1" style="display: none">
-                    <input type="radio"  value="1" id="radio_1" name="type" checked="">
-                    <label for="radio_1"> 学生 </label>
-                </div>
-                <div class="radio radio-success radio-inline" id="radio_div_2" style="display: none">
-                    <input type="radio" id="radio_2" value="0" name="type">
-                    <label for="radio_2"> 教师 </label>
-                </div>
-                <div class="radio radio-danger radio-inline" id="radio_div_3" style="display: none">
-                    <input type="radio" id="radio_3" value="2" name="type">
-                    <label for="radio_3"> 专家 </label>
+                <p class="m-t-md" id="rgMsg">登录到汽车租赁系统</p>
+                <div class="form-group">
+                    <input type="text" id="username" class="form-control uname" placeholder="用户名" />
                 </div>
                 <div class="form-group">
-                    <input type="text" id="userName" class="form-control uname" placeholder="用户名" />
-                </div>
-                <div class="form-group">
-                    <input type="password" id="passWord"  class="form-control pword m-b" placeholder="密码" />
+                    <input type="password" id="password"  class="form-control pword m-b" placeholder="密码" />
                 </div>
                 <div class="form-group" id="rgPassword" style="display: none">
-                    <input type="password" id="passWord2" class="form-control pword m-b" placeholder="确认密码"/>
+                    <input type="password" id="password2" class="form-control pword m-b" placeholder="确认密码"/>
                 </div>
                 <!--<a href="#">忘记密码了？</a>-->
                 <button class="btn btn-success btn-block" id="btn" onclick="submitAll();return false;">登录</button>
@@ -95,8 +83,8 @@
     var successMsg = "~(～￣▽￣)～登陆成功~";
     function init(){
         condition = {
-            userName: $('#userName').val(),
-            passWord: $('#passWord').val(),
+            username: $('#username').val(),
+            password: $('#password').val(),
             type: $("input[name='type']:checked").val()
         };
     }
@@ -133,18 +121,18 @@
         init();
         var urlStr;
         if(applyType == 'login'){
-            urlStr = "login";
-            if(condition.passWord == "" || condition.userName == ""){
+            urlStr = "/carrent/api/login";
+            if(condition.password == "" || condition.username == ""){
                 toastr.info('账号/密码不能为空！');
                 return false;
             }
         } else if(applyType == 'register'){
-            urlStr = "user/register";
+            urlStr = "/carrent/api/register";
             var flag = false;
-            if(condition.passWord == "" || condition.userName == ""){
+            if(condition.password == "" || condition.username == ""){
                 toastr.info('账号/密码不能为空！');
                 flag = true;
-            } else if(condition.passWord != $('#passWord2').val()){
+            } else if(condition.password != $('#password2').val()){
                 toastr.info('输入密码不一致！');
                 flag = true;
             }
@@ -153,7 +141,44 @@
             }
         }
         debugger
-        ajaxCommon({
+        $.ajax({
+            type: 'post',
+            url: urlStr,
+            data: JSON.stringify(condition),
+            dataType: "json",
+            contentType:"application/json",
+            success: function (obj) {
+                if(obj.code == 200){
+                    var data = obj.data;
+                    $.cookie("Token",data.token);
+                    // 设置User对象保存
+                    delete data.token;
+                    layer.alert(successMsg, {
+                        skin: 'layui-layer-lan',
+                        closeBtn: 0,
+                        shift: 1 //动画类型
+                    } , function(){
+                        if(applyType == 'register'){
+                            window.localStorage.setItem("ifNeedComplete","1");
+                        }
+                        window.localStorage.setItem("User",JSON.stringify(data));
+                        window.location.href = "index.html";
+                    });
+                } else if(obj.code == 500){
+                    // 账号密码错误
+                    toastr.error(obj.msg);
+                } else if(obj.code == 501){
+                    //用户已注册！
+                    toastr.error(obj.msg);
+                } else if(obj.code == 502){
+                    //用户已失效
+                    toastr.error(obj.msg);
+                } else if(obj.code == 100){
+                    toastr.info(obj.msg);
+                }
+            }
+        })
+        /*ajaxCommon({
             data: JSON.stringify(condition),
             url: urlStr
         }, function(obj) {
@@ -185,7 +210,7 @@
             } else if(obj.code == 100){
                 toastr.info(obj.msg);
             }
-        }, true);
+        }, true);*/
     }
 </script>
 </body>
