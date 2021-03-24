@@ -1,9 +1,12 @@
 package com.ma.car.service;
 
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.ma.car.model.Role;
 import com.ma.car.model.User;
 import com.ma.car.repository.RoleRepository;
 import com.ma.car.repository.UserRepository;
+import com.ma.car.result.JWTUtils;
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.crypto.SecureRandomNumberGenerator;
 import org.apache.shiro.crypto.hash.SimpleHash;
 import org.springframework.data.domain.Page;
@@ -14,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.util.HtmlUtils;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
 
@@ -169,5 +173,18 @@ public class UserService {
         return userRepository.findByName(name);
     }
 
+    // 获取cookie中用户信息
+    public Long getUserData() {
+        String token = (String) SecurityUtils.getSubject().getPrincipal();
+        //解密
+        DecodedJWT verify = JWTUtils.verify( token);
+        if(verify!=null){
+            Long id = Long.valueOf(verify.getClaim("id").asString());
+            return  id;
+        }else{
+            return null;
+        }
+
+    }
 
 }

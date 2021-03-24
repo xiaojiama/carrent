@@ -76,7 +76,8 @@ public class LoginController {
             User loginUser = userRepository.findByUsername(username);
             /*Role loginUserRole = roleService.listRoleByUser(username);
             loginUser.setRole(loginUserRole);*/
-
+            String token = username.toLowerCase() + "-token";
+            loginUser.setToken(token);
             return ResultFactory.buildSuccessResult(loginUser);
         }catch (IncorrectCredentialsException e) {
             return ResultFactory.buildFailResult("密码错误");

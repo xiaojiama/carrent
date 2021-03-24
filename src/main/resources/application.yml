@@ -8,6 +8,10 @@ spring:
     hiddenmethod:
       filter:
         enabled: true
+  devtools:
+    restart:
+      enabled: true
+      additional-paths: src/main/java
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
@@ -20,7 +24,7 @@ spring:
         hbm2ddl:
           auto: update
         dialect: org.hibernate.dialect.MySQL5InnoDBDialect
-  #�رջ��淽�����
+  #thymeleaf
   thymeleaf:
     cache: false
     suffix: .html

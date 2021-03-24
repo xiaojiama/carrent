@@ -97,7 +97,7 @@
             $('#login').css('display','none');
             $('#btn').text('登录');
             $('#rgTitle').text('登录');
-            $('#rgMsg').text('登录到教师管理系统');
+            $('#rgMsg').text('登录到汽车管理系统');
             toastr.options.positionClass = 'toast-middle-right';
             successMsg = "~(～￣▽￣)～登陆成功~";
         } else if(type == 'register'){
@@ -149,7 +149,7 @@
             contentType:"application/json",
             success: function (obj) {
                 if(obj.code == 200){
-                    var data = obj.data;
+                    var data = obj.result;
                     $.cookie("Token",data.token);
                     // 设置User对象保存
                     delete data.token;
@@ -162,7 +162,7 @@
                             window.localStorage.setItem("ifNeedComplete","1");
                         }
                         window.localStorage.setItem("User",JSON.stringify(data));
-                        window.location.href = "index.html";
+                        window.location.href = "/carrent/index";
                     });
                 } else if(obj.code == 500){
                     // 账号密码错误
